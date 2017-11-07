@@ -63,15 +63,13 @@ local function _print_debug(args)
 		print(table.concat(dep_out))
 	end
 
-	local count = args.count or (#dv > 0 and 3 or 0)
-
 	local pkt = flow:fillBuf(test)
-	if flow.updatePacket then
-		for _ = 1, count do
+	if flow.isDynamic then
+		for _ = 1, (args.count or 3) do
 			flow:updateBuf(test):dump(length)
 		end
 	else
-		if count then
+		if args.count and args.count > 1 then
 			print("Multiple packets requested but flow is not dynamic.")
 		end
 		pkt:dump()

@@ -18,7 +18,7 @@ return function(env)
 		-- use branchless incAndWrap if possible
 		if type(v) == "number" and step == 1 then
 			return function()
-				v = incAndWrap(v)
+				v = incAndWrap(v, limit)
 				return v
 			end
 		end

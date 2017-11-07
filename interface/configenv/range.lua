@@ -41,10 +41,10 @@ return function(env)
 	end
 
 	function env.list(tbl)
-		local index, len = 1, #tbl
+		local index, len = 0, #tbl
 
 		return function()
-			local v = tbl[index]
+			local v = tbl[index + 1]
 			index = incAndWrap(index, len)
 			return v
 		end

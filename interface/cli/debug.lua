@@ -63,13 +63,15 @@ local function _print_debug(args)
 		print(table.concat(dep_out))
 	end
 
+	local count = args.count or (#dv > 0 and 3 or 0)
+
 	local pkt = flow:fillBuf(test)
 	if flow.updatePacket then
-		for _ = 1, args.count do
+		for _ = 1, count do
 			flow:updateBuf(test):dump(length)
 		end
 	else
-		if args.count > 1 then
+		if count then
 			print("Multiple packets requested but flow is not dynamic.")
 		end
 		pkt:dump()
@@ -78,7 +80,8 @@ end
 
 function debug.configure(parser)
 	parser:option("-c --config", "Config file directory."):default("flows")
-	parser:option("-n --count", "Amount of variants to display."):default("1"):convert(tonumber)
+	parser:option("-n --count", "Amount of variants to display."
+		.. " (default: 3 for dynamic flows, 1 otherwise)"):convert(tonumber)
 	parser:argument("flow", "Name of the flow to display.")
 
 	parser:action(function(args)

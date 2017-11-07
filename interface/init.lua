@@ -58,11 +58,6 @@ function master(args) -- luacheck: globals master
 	deviceStatsThread.prepare(flows, devices)
 	timestampThread.prepare(flows, devices)
 
-	if #loadThread.flows == 0 then--and #countThread.flows == 0 then
-		log:error("No valid flows remaining.")
-		return
-	end
-
 	devices:configure()
 
 	arpThread.start(devices)

@@ -10,6 +10,8 @@ local Flow = require "flow"
 local thread = { flows = {} }
 
 function thread.prepare(flows, devices)
+	thread.showStats = #flows > 1
+
 	for _,flow in ipairs(flows) do
 		for _,tx in ipairs(flow:property "tx") do
 			table.insert(thread.flows, flow:clone{ tx_dev = tx })
@@ -34,15 +36,16 @@ function thread.start(devices)
 			end
 		end
 
-		mg.startTask("__INTERFACE_LOAD", flow, txQueue)
+		mg.startTask("__INTERFACE_LOAD", flow, txQueue, thread.showStats)
 	end
 end
 
-local function loadThread(flow, sendQueue)
+local function loadThread(flow, sendQueue, showStats)
 	flow = Flow.restore(flow)
 
 	local counter = stats:newPktTxCounter(
-		("Flow: dev=%d uid=%#x"):format(flow:property "tx_dev", flow:option "uid")
+		("Flow: dev=%d uid=%#x"):format(flow:property "tx_dev", flow:option "uid"),
+		showStats and "plain" or "nil"
 	)
 
 	local mempool = memory.createMemPool(function(buf) flow:fillBuf(buf) end)

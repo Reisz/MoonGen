@@ -8,6 +8,9 @@ local Flow = require "flow"
 local thread = { flows = {} }
 
 function thread.prepare(flows, devices)
+	-- don't count individual flows when only one is present
+	if #flows <= 1 then return end
+
 	for _,flow in ipairs(flows) do
 		for _,rx in ipairs(flow:property "rx") do
 			table.insert(thread.flows, flow:clone{ rx_dev = rx })

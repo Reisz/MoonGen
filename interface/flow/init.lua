@@ -118,7 +118,7 @@ function mod.crawlDirectory(baseDir, silent)
 	baseDir = baseDir or "flows"
 	for f in lfs.dir(baseDir) do
 		f = baseDir .. "/" .. f
-		if lfs.attributes(f, "mode") == "file" then
+		if f:find(".lua$") and lfs.attributes(f, "mode") == "file" then
 			configenv:parseFile(f)
 		end
 	end

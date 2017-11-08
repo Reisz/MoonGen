@@ -1,4 +1,5 @@
 local arp = require "proto.arp"
+local log = require "log"
 
 local dependency = {}
 
@@ -42,7 +43,18 @@ function dependency.debug(tbl)
 end
 
 function dependency.getValue(_, tbl)
-	return arp.blockingLookup(tbl[2], tbl[4]) or tbl[3]
+	log:info("ARP %s (Timeout %ds)", ipString(tbl[2]), tbl[4])
+	local result = arp.blockingLookup(tbl[2], tbl[4])
+
+	if result then
+		log:info("ARP %s => %s", ipString(tbl[2]), result)
+	elseif tbl[3] then
+		log:warn("ARP %s failed, fallback: %s", ipString(tbl[2]), macString(tbl[3]))
+	else
+		log:warn("ARP %s failed, fallback to default", ipString(tbl[2]))
+	end
+
+	return result
 end
 
 return dependency
